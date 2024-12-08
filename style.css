@@ -1,0 +1,239 @@
+@import url('https://fonts.googleapis.com/css2?family=Golos+Text:wght@400..900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+
+:root {
+    --fonte-primaria: 'Roboto', sans-serif;
+    --fonte-secundaria: 'Golos Text', sans-serif;
+    
+    --cor-primaria: #ff6a00;
+    --cor-secundaria: #;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    flex-direction: column;
+    font-size: 16px;
+    font-family: var(--fonte-primaria);
+    background-color: #000;
+    color: #fff;
+}
+
+a {
+    text-decoration: none;
+    font-weight: 400;
+}
+
+img,
+a {
+    user-select: none;
+}
+
+::-webkit-scrollbar {
+    width: 8px;
+    background-color: #000;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #1900ff;    
+}
+
+.mg-lados {
+    margin: 0 8rem;
+}
+
+.txt-destaque {
+    color: #1900ff;
+}
+
+/* HEADER */
+header {
+    padding: 0.8rem 0;
+    /* background-color: #202329; */
+    background-color: #000;
+    position: fixed;
+    z-index: 1;
+    width: 100%;
+}
+
+.nav-bar {
+    display: grid;
+    place-items: center;
+    grid-template-columns: 1fr 2fr 1fr;
+}
+
+.logo {
+    width: 80px;
+}
+
+.link-menu-container {
+    display: flex;
+    gap: 5rem;
+}
+
+.link-menu {
+    color: #fff;
+    transition: 300ms;
+}
+
+.link-menu:hover {
+    transform: scale(1.08);
+    border-bottom: 1px solid #1900ff;
+    transition: 300ms;
+}
+
+.link-contato {
+    background-color: #1900ff;
+    color: #fff;
+    border-radius: 5px;
+    font-size: 1.1rem;
+    padding: 0.6rem 1.3rem;
+    border: 0;
+    font-weight: 600;
+    transition: 500ms;
+    position: relative;
+    overflow: hidden;
+}
+
+.link-contato:hover {
+    background-color: #fff;
+    color: #1900ff;
+    transition: 500ms;
+    cursor: pointer;
+    transform: scale(1.06);
+}
+
+.link-contato::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.8), transparent);
+    transform: translateX(-150%);
+    z-index: 1;
+    pointer-events: none;
+    animation: brilho-start 2s ease-in-out;
+    animation-delay: 3s;
+}
+
+/* Animação inicial com 1s de atraso */
+@keyframes brilho-start {
+    0% {
+        transform: translateX(-150%);
+        opacity: 0.2;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        transform: translateX(150%);
+        opacity: 0.2;
+    }
+}
+
+
+/* INTRO */
+.intro {
+    display: flex;
+    align-items: center;
+    padding: 10rem 0;
+    height: 100vh;
+    width: 100%;
+    overflow: hidden;
+}
+
+.info-img {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.intro-info {
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+    gap: 2rem;
+}
+
+.intro-info > h1 {
+    width: 90%;
+    font-size: 2.4rem;
+}
+
+.intro-info > span {
+    width: 90%;
+    text-align: justify;
+    font-size: 1.05rem;
+}
+
+.intro-social-media h2 {
+    font-size: 1.3rem;
+    font-weight: 500;
+    margin: 1.5rem 0 1rem 0;
+}
+
+.social-media {
+    display: flex;
+    gap: 0.8rem;
+}
+
+.rede-social {
+    background-color: #1900ff;
+    padding: 0.8rem;
+    font-size: 1.6rem;
+    border-radius: 50%;
+    color: #fff;
+    transition: 300ms;
+}
+
+.rede-social:hover {
+    background-color: #ffffff;
+    color: #1900ff;
+    transition: 700ms;
+    transform: scale(0.85);
+}
+
+
+.intro-img {
+    width: 50%;
+    display: flex;
+    justify-content: center;
+}
+
+.intro-image {
+    position: relative;
+    top: 2rem;
+    width: 80%;
+    border-radius: 50%;
+    animation: minhaFoto 2s alternate ease-in-out infinite;
+}
+
+@keyframes minhaFoto {
+    from {
+        transform: scale(1.1);
+        box-shadow: 0px 0px 10px #1900ff;
+    }
+
+    to {
+        transform: scale(1);
+        box-shadow: 0px 0px 50px #1900ff;
+    }
+}
+
+
+/* MAIN - QUEM SOU EU */
+.sou-eu {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.quem-sou-eu {
+    display: flex;
+    gap: 1rem;
+}
