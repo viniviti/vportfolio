@@ -4,8 +4,8 @@
     --fonte-primaria: 'Roboto', sans-serif;
     --fonte-secundaria: 'Golos Text', sans-serif;
     
-    --cor-primaria: #ff6a00;
-    --cor-secundaria: #;
+    --cor-primaria: #1900ff;
+    --cor-secundaria: #1900aa;
 }
 
 * {
@@ -20,6 +20,10 @@ body {
     font-family: var(--fonte-primaria);
     background-color: #000;
     color: #fff;
+    background-image: url("/images/fundoPortfolio.png");
+    background-repeat: repeat-y;
+    background-position-y: -6rem;  
+    background-size: 1366px;
 }
 
 a {
@@ -38,7 +42,7 @@ a {
 }
 
 ::-webkit-scrollbar-thumb {
-    background-color: #1900ff;    
+    background-color: var(--cor-secundaria);    
 }
 
 .mg-lados {
@@ -46,7 +50,13 @@ a {
 }
 
 .txt-destaque {
-    color: #1900ff;
+    color: var(--cor-primaria);
+}
+
+.titulos {
+    font-size: 1.9rem;
+    margin: 5rem 0 3rem 0;
+    text-align: center;
 }
 
 /* HEADER */
@@ -75,18 +85,16 @@ header {
 }
 
 .link-menu {
-    color: #fff;
+    color: #dcdcdc;
     transition: 300ms;
 }
 
 .link-menu:hover {
-    transform: scale(1.08);
-    border-bottom: 1px solid #1900ff;
-    transition: 300ms;
+    color: white;
 }
 
 .link-contato {
-    background-color: #1900ff;
+    background-color: var(--cor-primaria);
     color: #fff;
     border-radius: 5px;
     font-size: 1.1rem;
@@ -100,10 +108,9 @@ header {
 
 .link-contato:hover {
     background-color: #fff;
-    color: #1900ff;
+    color: var(--cor-primaria);
     transition: 500ms;
     cursor: pointer;
-    transform: scale(1.06);
 }
 
 .link-contato::before {
@@ -183,7 +190,7 @@ header {
 }
 
 .rede-social {
-    background-color: #1900ff;
+    background-color: var(--cor-primaria);
     padding: 0.8rem;
     font-size: 1.6rem;
     border-radius: 50%;
@@ -193,9 +200,9 @@ header {
 
 .rede-social:hover {
     background-color: #ffffff;
-    color: #1900ff;
+    color: var(--cor-primaria);
     transition: 700ms;
-    transform: scale(0.85);
+    transform: scale(0.95);
 }
 
 
@@ -216,12 +223,12 @@ header {
 @keyframes minhaFoto {
     from {
         transform: scale(1.1);
-        box-shadow: 0px 0px 10px #1900ff;
+        box-shadow: 0px 0px 10px var(--cor-primaria);
     }
 
     to {
         transform: scale(1);
-        box-shadow: 0px 0px 50px #1900ff;
+        box-shadow: 0px 0px 50px var(--cor-primaria);
     }
 }
 
@@ -231,9 +238,48 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 5rem;
+}
+
+.raio {
+    width: 35%;
+    border: 5px solid #fff;
+    border-radius: 20px ;
 }
 
 .quem-sou-eu {
+    text-align: justify;
     display: flex;
+    flex-direction: column;
     gap: 1rem;
+}
+
+.skills {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 3rem;
+}
+
+.skill-container {
+    display: flex;
+    flex-direction: column;
+    align-self: baseline;
+    align-items: center;
+    gap: 1rem;
+}
+
+.skill-logo {
+    width: 100px;
+}
+
+
+/* FOOTER */
+.footer-container {
+    margin-top: 5rem;
+    padding: 5rem 0;
+}
+
+.footer-img {
+    width: 80px;
 }
