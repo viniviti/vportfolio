@@ -23,7 +23,7 @@ body {
     background-image: url("/images/fundoPortfolio.png");
     background-repeat: repeat-y;
     background-position-y: -6rem;  
-    background-size: 1366px;
+    background-size: cover;
 }
 
 a {
@@ -101,7 +101,7 @@ header {
     padding: 0.6rem 1.3rem;
     border: 0;
     font-weight: 600;
-    transition: 500ms;
+    transition: 300ms;
     position: relative;
     overflow: hidden;
 }
@@ -109,7 +109,7 @@ header {
 .link-contato:hover {
     background-color: #fff;
     color: var(--cor-primaria);
-    transition: 500ms;
+    transition: 300ms;
     cursor: pointer;
 }
 
@@ -150,14 +150,11 @@ header {
     align-items: center;
     padding: 10rem 0;
     height: 100vh;
-    width: 100%;
-    overflow: hidden;
 }
 
 .info-img {
     display: flex;
     align-items: center;
-    width: 100%;
 }
 
 .intro-info {
@@ -282,4 +279,92 @@ header {
 
 .footer-img {
     width: 80px;
+}
+
+@media screen and (max-width: 1200px) {
+    .intro-image {
+        top: -2rem;
+        width: 90%;
+    }
+}
+
+@media screen and (max-width: 1024px) {
+    .intro {
+        height: 110vh;
+        padding: 8rem 0;
+    }
+    
+    .intro-info > h1 {
+        font-size: 1.5rem;
+    }
+    
+    .intro-info > span {
+        font-size: 1rem;
+    }
+}
+
+@media screen and (max-width: 768px) {
+
+    .intro {
+        height: 135vh;
+        padding: 6rem 0;
+    }
+
+    .info-img {
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+    }
+
+    .intro-info {
+        width: 80%;
+        gap: 0;
+    }
+
+    .intro-info > h1 {
+        font-size: 2rem;
+    }
+
+    .intro-info > span {
+        font-size: 0.9rem;
+    }
+
+    .intro-image {
+        top: 2rem;
+        width: 80%;
+    }
+
+    .mg-lados {
+        margin: 0.2rem;
+    }
+
+    .sou-eu, .skills  {
+        margin: 0 2rem;
+        gap: 2rem;
+    }
+
+    .skills {
+        gap: 2rem;
+    }
+}
+
+@media screen and (max-width: 650px) {
+    .link-menu-container {
+        gap: 2rem;
+    }
+
+    .link-menu {
+        font-size: 13px;
+    }
+
+    .link-contato {
+        font-size: 0.9rem;
+        padding: 0.5rem 1rem;
+    }
+}
+
+@media screen and (max-width: 250px) {
+    body {
+        display: none;
+    }
 }
