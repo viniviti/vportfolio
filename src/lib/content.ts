@@ -29,16 +29,27 @@ function mergeContent(base: SiteContent, over?: Partial<SiteContent> | null): Si
 /** Conteúdo do site: Supabase se disponível, senão o padrão (currículo real). */
 export async function getContent(): Promise<SiteContent> {
   const supabase = getAnonClient();
-  if (!supabase) return defaultContent;
+  if (!supabase) {
+    console.warn("[getContent] Supabase anon client não configurado — usando defaultContent.");
+    return defaultContent;
+  }
   try {
     const { data, error } = await supabase
       .from("content")
       .select("data")
       .eq("id", ROW_ID)
       .maybeSingle();
-    if (error || !data?.data) return defaultContent;
+    if (error) {
+      console.error("[getContent] Erro do Supabase:", error.message, error);
+      return defaultContent;
+    }
+    if (!data?.data) {
+      console.warn("[getContent] Nenhuma linha 'main' encontrada em content — usando defaultContent.");
+      return defaultContent;
+    }
     return mergeContent(defaultContent, data.data as Partial<SiteContent>);
-  } catch {
+  } catch (e) {
+    console.error("[getContent] Exceção ao ler do Supabase:", e);
     return defaultContent;
   }
 }
