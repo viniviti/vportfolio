@@ -12,55 +12,19 @@ type Side = "left" | "right" | "center";
 export default function Hero({ hero }: { hero: HeroContent }) {
   const sectionRef = useRef<HTMLElement>(null);
   const frameRef = useRef<HTMLDivElement>(null);
-  const innerRef = useRef<HTMLDivElement>(null);
   const sideRef = useRef<Side>("center");
   const [side, setSide] = useState<Side>("center");
-
-  const st = useRef({ px: 0, py: 0, split: 0.5, tpx: 0, tpy: 0, tsplit: 0.5 });
 
   useEffect(() => {
     const section = sectionRef.current;
     const frame = frameRef.current;
-    const inner = innerRef.current;
-    if (!section || !frame || !inner) return;
+    if (!section || !frame) return;
 
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const layers = Array.from(section.querySelectorAll<HTMLElement>("[data-depth]"));
-
-    let raf = 0;
-    const loop = () => {
-      const s = st.current;
-      s.px += (s.tpx - s.px) * 0.07;
-      s.py += (s.tpy - s.py) * 0.07;
-      s.split += (s.tsplit - s.split) * 0.08;
-      frame.style.setProperty("--split", s.split.toFixed(4));
-      inner.style.transform = `rotateY(${s.px * 6}deg) rotateX(${-s.py * 6}deg) translate3d(${s.px * 6}px, ${s.py * 6}px, 0)`;
-      layers.forEach((l) => {
-        const d = parseFloat(l.dataset.depth || "10");
-        l.style.transform = `translate3d(${s.px * d}px, ${s.py * d}px, 0)`;
-      });
-      raf = requestAnimationFrame(loop);
-    };
-
-    // Faixa segura do divisor: nunca cobre 100% do quadro nem o
-    // personagem flutuante no canto — mantém sempre as duas metades visíveis.
-    const SPLIT_MIN = 0.22;
-    const SPLIT_MAX = 0.78;
 
     const onMove = (e: MouseEvent) => {
       const r = section.getBoundingClientRect();
       const x = (e.clientX - r.left) / r.width;
-      const y = (e.clientY - r.top) / r.height;
-      st.current.tpx = (x - 0.5) * 2;
-      st.current.tpy = (y - 0.5) * 2;
-
-      // O divisor acompanha o cursor de forma contínua (relativo ao quadro
-      // do retrato), mas sempre travado entre SPLIT_MIN e SPLIT_MAX.
-      const frameRect = frame.getBoundingClientRect();
-      const fx = (e.clientX - frameRect.left) / frameRect.width;
-      const eased = 0.5 + (fx - 0.5) * 0.9;
-      st.current.tsplit = Math.min(SPLIT_MAX, Math.max(SPLIT_MIN, eased));
-
       const ns: Side = x < 0.45 ? "left" : x > 0.55 ? "right" : "center";
       if (ns !== sideRef.current) {
         sideRef.current = ns;
@@ -68,9 +32,6 @@ export default function Hero({ hero }: { hero: HeroContent }) {
       }
     };
     const onLeave = () => {
-      st.current.tpx = 0;
-      st.current.tpy = 0;
-      st.current.tsplit = 0.5;
       sideRef.current = "center";
       setSide("center");
     };
@@ -78,7 +39,6 @@ export default function Hero({ hero }: { hero: HeroContent }) {
     if (!reduce) {
       section.addEventListener("mousemove", onMove);
       section.addEventListener("mouseleave", onLeave);
-      loop();
 
       const q = gsap.utils.selector(section);
       gsap.set(q("[data-intro]"), { opacity: 0, y: 26 });
@@ -89,7 +49,6 @@ export default function Hero({ hero }: { hero: HeroContent }) {
     }
 
     return () => {
-      cancelAnimationFrame(raf);
       section.removeEventListener("mousemove", onMove);
       section.removeEventListener("mouseleave", onLeave);
     };
@@ -97,6 +56,7 @@ export default function Hero({ hero }: { hero: HeroContent }) {
 
   const leftOn = side === "left";
   const rightOn = side === "right";
+  const splitPct = leftOn ? 66 : rightOn ? 34 : 50;
 
   return (
     <section
@@ -104,14 +64,9 @@ export default function Hero({ hero }: { hero: HeroContent }) {
       id="inicio"
       className="relative flex min-h-[100svh] items-center overflow-hidden pb-24 pt-28"
     >
-      {/* Fundo: blobs + grid */}
       <div className="pointer-events-none absolute inset-0 -z-10">
+        <div className="absolute left-[8%] top-[22%] h-[38vmax] w-[38vmax] rounded-full bg-violet/20 blur-[90px] animate-blob" />
         <div
-          data-depth="18"
-          className="absolute left-[8%] top-[22%] h-[38vmax] w-[38vmax] rounded-full bg-violet/20 blur-[90px] animate-blob"
-        />
-        <div
-          data-depth="26"
           className="absolute right-[6%] bottom-[10%] h-[32vmax] w-[32vmax] rounded-full bg-emerald/15 blur-[90px] animate-blob"
           style={{ animationDelay: "-6s" }}
         />
@@ -128,9 +83,7 @@ export default function Hero({ hero }: { hero: HeroContent }) {
       </div>
 
       <div className="container-x">
-        {/* Palco central */}
-        <div className="perspective relative grid grid-cols-1 items-center gap-10 lg:grid-cols-[1fr_auto_1fr] lg:gap-6">
-          {/* Coluna esquerda — designer */}
+        <div className="relative grid grid-cols-1 items-center gap-10 lg:grid-cols-[1fr_auto_1fr] lg:gap-6">
           <div
             className={`order-2 text-center transition-all duration-500 lg:order-1 lg:-translate-y-6 lg:text-right ${
               rightOn ? "opacity-35 blur-[1px]" : "opacity-100"
@@ -149,75 +102,61 @@ export default function Hero({ hero }: { hero: HeroContent }) {
             </p>
           </div>
 
-          {/* Retrato split */}
           <div className="order-1 mx-auto lg:order-2">
             <div className="relative">
               <div
                 ref={frameRef}
                 className="relative h-[24rem] w-72 overflow-hidden rounded-[1.6rem] rounded-t-[9rem] border border-line bg-surface shadow-[0_40px_120px_-40px_rgb(var(--violet)/0.5)] sm:h-[30rem] sm:w-[22rem]"
-                style={{ "--split": 0.5 } as React.CSSProperties}
               >
-                <div ref={innerRef} className="absolute inset-0 preserve-3d">
-                  {/* metade esquerda (designer / colorido) */}
-                  <div
-                    className="absolute inset-y-0 left-0 overflow-hidden"
-                    style={{ width: "calc(var(--split) * 100%)" }}
-                  >
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={hero.portraitUrl}
-                      alt=""
-                      className="absolute inset-y-0 left-0 h-full w-72 max-w-none object-cover object-top sm:w-[22rem]"
-                    />
-                    <div className="absolute inset-0 bg-violet/25 mix-blend-color" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-violet/40 via-transparent to-transparent" />
-                  </div>
-                  {/* metade direita (front-end / mono) */}
-                  <div
-                    className="absolute inset-y-0 right-0 overflow-hidden"
-                    style={{ width: "calc((1 - var(--split)) * 100%)" }}
-                  >
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={hero.portraitUrl}
-                      alt={`Retrato de ${hero.name}`}
-                      className="absolute inset-y-0 right-0 h-full w-72 max-w-none object-cover object-top grayscale-[0.55] sm:w-[22rem]"
-                    />
-                    <div className="absolute inset-0 bg-emerald/15 mix-blend-color" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-bg/70 via-transparent to-transparent" />
-                    {/* linhas de código faint */}
-                    <div className="absolute bottom-4 right-3 text-right font-mono text-[9px] leading-relaxed text-emerald/50">
-                      <div>&lt;html&gt;</div>
-                      <div>class=&quot;dev&quot;</div>
-                      <div>const clean = true;</div>
-                    </div>
-                  </div>
-                  {/* divisor */}
-                  <div
-                    className="absolute inset-y-0 w-[2px] bg-gradient-to-b from-violet via-violet/40 to-emerald shadow-[0_0_20px_rgb(var(--violet)/0.8)]"
-                    style={{ left: "calc(var(--split) * 100%)", transform: "translateX(-1px)" }}
+                <div className="absolute inset-0">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={hero.portraitUrl}
+                    alt={`Retrato de ${hero.name}`}
+                    className="absolute inset-0 h-full w-full object-cover object-top grayscale-[0.55]"
                   />
+                  <div className="absolute inset-0 bg-emerald/15 mix-blend-color" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-bg/70 via-transparent to-transparent" />
+                  <div className="absolute bottom-4 right-3 text-right font-mono text-[9px] leading-relaxed text-emerald/50">
+                    <div>&lt;html&gt;</div>
+                    <div>class=&quot;dev&quot;</div>
+                    <div>const clean = true;</div>
+                  </div>
                 </div>
+
+                <div
+                  className="absolute inset-0 overflow-hidden transition-[clip-path] duration-700 ease-out"
+                  style={{ clipPath: `polygon(0 0, ${splitPct}% 0, ${splitPct}% 100%, 0% 100%)` }}
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={hero.portraitUrl}
+                    alt=""
+                    aria-hidden
+                    className="absolute inset-0 h-full w-full object-cover object-top"
+                  />
+                  <div className="absolute inset-0 bg-violet/25 mix-blend-color" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-violet/40 via-transparent to-transparent" />
+                </div>
+
+                <div
+                  className="absolute inset-y-0 w-[2px] bg-gradient-to-b from-violet via-violet/40 to-emerald shadow-[0_0_20px_rgb(var(--violet)/0.8)] transition-[left] duration-700 ease-out"
+                  style={{ left: `${splitPct}%`, transform: "translateX(-1px)" }}
+                />
               </div>
 
-              {/* personagem que olha pro cursor */}
-              <div data-depth="34" className="absolute -right-5 -top-5 z-20 h-20 w-20 animate-float sm:-right-7 sm:h-24 sm:w-24">
+              <div className="absolute -right-5 -top-5 z-20 h-20 w-20 animate-float sm:-right-7 sm:h-24 sm:w-24">
                 <div className="glass rounded-[1.4rem] p-1.5 shadow-lg">
                   <FollowEyes className="h-full w-full" />
                 </div>
               </div>
 
-              {/* etiqueta rotacionada */}
-              <div
-                data-depth="14"
-                className="absolute -left-10 top-1/3 hidden rotate-[-90deg] font-mono text-[10px] uppercase tracking-[0.4em] text-faint lg:block"
-              >
+              <div className="absolute -left-10 top-1/3 hidden rotate-[-90deg] font-mono text-[10px] uppercase tracking-[0.4em] text-faint lg:block">
                 Front-End Dev
               </div>
             </div>
           </div>
 
-          {/* Coluna direita — front-end */}
           <div
             className={`order-3 text-center transition-all duration-500 lg:translate-y-8 lg:text-left ${
               leftOn ? "opacity-35 blur-[1px]" : "opacity-100"
@@ -239,7 +178,6 @@ export default function Hero({ hero }: { hero: HeroContent }) {
           </div>
         </div>
 
-        {/* Assinatura + CTAs */}
         <div className="mt-14 flex flex-col items-center gap-6">
           <div data-intro className="text-center">
             <p className="eyebrow mb-2 inline-flex items-center gap-2">
@@ -274,7 +212,6 @@ export default function Hero({ hero }: { hero: HeroContent }) {
         </div>
       </div>
 
-      {/* dica de scroll */}
       <div className="pointer-events-none absolute bottom-6 left-1/2 hidden -translate-x-1/2 flex-col items-center gap-2 lg:flex">
         <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-faint">scroll</span>
         <span className="h-10 w-px overflow-hidden bg-line">
