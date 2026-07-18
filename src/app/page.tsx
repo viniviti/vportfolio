@@ -27,7 +27,7 @@ export default async function Home() {
       <CustomCursor />
       <ScrollRail />
       <SocialWidget social={c.social} name={c.hero.name} />
-      <Nav initials={c.meta.initials} social={c.social} />
+      <Nav initials={c.meta.initials} />
 
       <SnapScroll>
         <Hero hero={c.hero} />

@@ -40,9 +40,17 @@ function Visual({ p }: { p: ProjectItem }) {
           {p.status === "live" ? domainOf(p.liveUrl) : "em-construcao.dev"}
         </span>
       </div>
-      <div className={`relative flex-1 overflow-hidden bg-gradient-to-br ${grad}`}>
+      <div
+        className={`relative flex-1 overflow-hidden bg-gradient-to-br ${grad}`}
+      >
         {p.imageUrl ? (
-          <Image src={p.imageUrl} alt={p.title} fill sizes="440px" className="object-cover" />
+          <Image
+            src={p.imageUrl}
+            alt={p.title}
+            fill
+            sizes="440px"
+            className="object-cover"
+          />
         ) : (
           <>
             <div
@@ -99,15 +107,22 @@ function ProjectCard({ p, index }: { p: ProjectItem; index: number }) {
           )}
         </div>
 
-        <h3 className={`font-display text-2xl font-semibold ${soon ? "text-muted" : "text-fg"}`}>
+        <h3
+          className={`font-display text-2xl font-semibold ${soon ? "text-muted" : "text-fg"}`}
+        >
           {p.title}
         </h3>
-        <p className="mt-3 text-sm leading-relaxed text-muted">{p.description}</p>
+        <p className="mt-3 text-sm leading-relaxed text-muted">
+          {p.description}
+        </p>
 
         {p.tags.length > 0 && (
           <div className="mt-4 flex flex-wrap gap-2">
             {p.tags.map((t) => (
-              <span key={t} className="rounded-md border border-line px-2.5 py-1 font-mono text-[11px] text-muted">
+              <span
+                key={t}
+                className="rounded-md border border-line px-2.5 py-1 font-mono text-[11px] text-muted"
+              >
                 {t}
               </span>
             ))}
@@ -137,7 +152,11 @@ function ProjectCard({ p, index }: { p: ProjectItem; index: number }) {
               <GithubIcon className="h-[18px] w-[18px]" />
             </a>
           )}
-          {soon && <span className="font-mono text-xs text-faint">Em construção, volte logo ✦</span>}
+          {soon && (
+            <span className="font-mono text-xs text-faint">
+              Em construção, volte logo ✦
+            </span>
+          )}
         </div>
       </div>
     </div>
@@ -155,7 +174,9 @@ function GithubCard({ github }: { github: string }) {
       <span className="grid h-16 w-16 place-items-center rounded-full border border-line bg-surface">
         <GithubIcon className="h-7 w-7 text-fg" />
       </span>
-      <p className="font-display text-2xl font-semibold text-fg">Mais no GitHub</p>
+      <p className="font-display text-2xl font-semibold text-fg">
+        Mais no GitHub
+      </p>
       <p className="max-w-[18rem] text-sm text-muted">
         Explore repositórios, experimentos e o código por trás dos projetos.
       </p>
@@ -170,7 +191,13 @@ type Card =
   | { kind: "project"; p: ProjectItem; index: number }
   | { kind: "github" };
 
-export default function Projects({ projects, github }: { projects: ProjectItem[]; github: string }) {
+export default function Projects({
+  projects,
+  github,
+}: {
+  projects: ProjectItem[];
+  github: string;
+}) {
   const deck: Card[] = [
     ...projects.map((p, index) => ({ kind: "project" as const, p, index })),
     { kind: "github" as const },
@@ -252,7 +279,8 @@ export default function Projects({ projects, github }: { projects: ProjectItem[]
 
     return () => {
       window.removeEventListener("section:change", onSection);
-      if (window.__snapStepGuards?.[MY_INDEX] === guard) delete window.__snapStepGuards[MY_INDEX];
+      if (window.__snapStepGuards?.[MY_INDEX] === guard)
+        delete window.__snapStepGuards[MY_INDEX];
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [interactive, N]);
@@ -306,53 +334,109 @@ export default function Projects({ projects, github }: { projects: ProjectItem[]
       <div className="container-x">
         <SectionLabel n="05">Projetos selecionados</SectionLabel>
         <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
-          <h2 data-reveal className="max-w-2xl font-display text-4xl font-semibold tracking-tight sm:text-6xl">
+          <h2
+            data-reveal
+            className="max-w-2xl font-display text-4xl font-semibold tracking-tight sm:text-6xl"
+          >
             Coisas que eu <span className="text-gradient">coloquei no ar</span>.
           </h2>
-          <p data-reveal className="hidden font-mono text-xs text-faint sm:block">
+          <p
+            data-reveal
+            className="hidden font-mono text-xs text-faint lg:block"
+          >
             role · arraste · ← →
+          </p>
+          <p data-reveal className="font-mono text-xs text-faint lg:hidden">
+            deslize para o lado →
           </p>
         </div>
       </div>
 
-      {/* PALCO — stack de cartas (coverflow) */}
-      <div
-        onPointerDown={onPointerDown}
-        onPointerMove={onPointerMove}
-        onPointerUp={endDrag}
-        onPointerLeave={endDrag}
-        onClickCapture={onClickCapture}
-        className="relative mx-auto h-[26rem] w-full max-w-6xl select-none sm:h-[27rem]"
-        style={{ perspective: "1800px", touchAction: "pan-y", cursor: "grab" }}
-      >
-        {deck.map((card, i) => {
-          const d = circ(i - active, N);
-          const dPrev = circ(i - prevRef.current, N);
-          const wrapped = Math.abs(d - dPrev) > 1; // deu a volta → sem transição
-          const abs = Math.abs(d);
-          const hidden = abs > 2;
-          const isCenter = d === 0;
+      {/* DESKTOP / NOTEBOOK — coverflow original, inalterado (só ganhou overflow-hidden de segurança) */}
+      <div className="hidden lg:block">
+        <div
+          onPointerDown={onPointerDown}
+          onPointerMove={onPointerMove}
+          onPointerUp={endDrag}
+          onPointerLeave={endDrag}
+          onClickCapture={onClickCapture}
+          className="relative mx-auto h-[26rem] w-full max-w-6xl select-none overflow-hidden sm:h-[27rem]"
+          style={{
+            perspective: "1800px",
+            touchAction: "pan-y",
+            cursor: "grab",
+          }}
+        >
+          {deck.map((card, i) => {
+            const d = circ(i - active, N);
+            const dPrev = circ(i - prevRef.current, N);
+            const wrapped = Math.abs(d - dPrev) > 1;
+            const abs = Math.abs(d);
+            const hidden = abs > 2;
+            const isCenter = d === 0;
 
-          const style: React.CSSProperties = {
-            transform: `translateX(calc(-50% + ${d * 58}%)) scale(${Math.max(1 - abs * 0.16, 0.6)}) rotateY(${d * -6}deg)`,
-            filter: isCenter ? "none" : `blur(${Math.min(abs * 2.5, 6)}px)`,
-            opacity: hidden ? 0 : isCenter ? 1 : Math.max(1 - abs * 0.42, 0.1),
-            zIndex: 50 - abs,
-            pointerEvents: hidden ? "none" : "auto",
-            transition: wrapped
-              ? "none"
-              : "transform 620ms cubic-bezier(0.22,1,0.36,1), filter 620ms ease, opacity 620ms ease",
-          };
+            const style: React.CSSProperties = {
+              transform: `translateX(calc(-50% + ${d * 58}%)) scale(${Math.max(1 - abs * 0.16, 0.6)}) rotateY(${d * -6}deg)`,
+              filter: isCenter ? "none" : `blur(${Math.min(abs * 2.5, 6)}px)`,
+              opacity: hidden
+                ? 0
+                : isCenter
+                  ? 1
+                  : Math.max(1 - abs * 0.42, 0.1),
+              zIndex: 50 - abs,
+              pointerEvents: hidden ? "none" : "auto",
+              transition: wrapped
+                ? "none"
+                : "transform 620ms cubic-bezier(0.22,1,0.36,1), filter 620ms ease, opacity 620ms ease",
+            };
 
-          return (
+            return (
+              <div
+                key={i}
+                className="absolute left-1/2 top-0 h-full w-[88vw] max-w-[25rem] will-change-transform"
+                style={style}
+                onClick={() => {
+                  if (!isCenter && !hidden) jumpTo(i);
+                }}
+                aria-hidden={hidden}
+              >
+                {card.kind === "project" ? (
+                  <ProjectCard p={card.p} index={card.index} />
+                ) : (
+                  <GithubCard github={github} />
+                )}
+              </div>
+            );
+          })}
+        </div>
+
+        <div className="mt-8 flex items-center justify-center gap-2.5">
+          {deck.map((_, i) => {
+            const on = ((active % N) + N) % N === i;
+            return (
+              <button
+                key={i}
+                onClick={() => jumpTo(i)}
+                aria-label={`Ir para carta ${i + 1}`}
+                className={`h-1.5 rounded-full transition-all duration-300 ${
+                  on ? "w-7 bg-violet" : "w-1.5 bg-line hover:bg-muted"
+                }`}
+              />
+            );
+          })}
+        </div>
+      </div>
+
+      {/* MOBILE / TABLET — lista com scroll horizontal nativo (sem transforms 3D) */}
+      <div className="lg:hidden">
+        <div
+          className="-mx-6 flex snap-x snap-mandatory gap-4 overflow-x-auto px-6 pb-4 sm:-mx-10 sm:px-10 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          style={{ scrollPaddingLeft: "1.5rem" }}
+        >
+          {deck.map((card, i) => (
             <div
               key={i}
-              className="absolute left-1/2 top-0 h-full w-[88vw] max-w-[25rem] will-change-transform"
-              style={style}
-              onClick={() => {
-                if (!isCenter && !hidden) jumpTo(i);
-              }}
-              aria-hidden={hidden}
+              className="h-[26rem] w-[85vw] max-w-sm shrink-0 snap-center sm:h-[28rem] sm:w-[60vw]"
             >
               {card.kind === "project" ? (
                 <ProjectCard p={card.p} index={card.index} />
@@ -360,25 +444,17 @@ export default function Projects({ projects, github }: { projects: ProjectItem[]
                 <GithubCard github={github} />
               )}
             </div>
-          );
-        })}
-      </div>
+          ))}
+        </div>
 
-      {/* indicadores (dots) */}
-      <div className="mt-8 flex items-center justify-center gap-2.5">
-        {deck.map((_, i) => {
-          const on = ((active % N) + N) % N === i;
-          return (
-            <button
+        <div className="mt-6 flex items-center justify-center gap-2.5">
+          {deck.map((_, i) => (
+            <span
               key={i}
-              onClick={() => jumpTo(i)}
-              aria-label={`Ir para carta ${i + 1}`}
-              className={`h-1.5 rounded-full transition-all duration-300 ${
-                on ? "w-7 bg-violet" : "w-1.5 bg-line hover:bg-muted"
-              }`}
+              className={`h-1.5 w-1.5 rounded-full ${i === 0 ? "bg-violet" : "bg-line"}`}
             />
-          );
-        })}
+          ))}
+        </div>
       </div>
     </section>
   );
