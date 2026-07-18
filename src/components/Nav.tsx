@@ -171,7 +171,7 @@ export default function Nav({
             {socialItems.length > 0 && (
               <div className="flex items-center gap-3">
                 {socialItems.map(({ key, label, href, Icon }) => (
-                  
+                  <a
                     key={key}
                     href={href}
                     target={key === "email" ? undefined : "_blank"}
