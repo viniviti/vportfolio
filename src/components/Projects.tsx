@@ -30,27 +30,33 @@ function Visual({ p }: { p: ProjectItem }) {
       ? "from-emerald/25 via-surface to-violet/15"
       : "from-violet/25 via-surface to-emerald/15";
 
+  const hasLink = p.status === "live" && !!p.liveUrl;
+
   return (
     <div className="absolute inset-0 flex flex-col">
       <div className="flex items-center gap-1.5 border-b border-line bg-bg/60 px-4 py-2.5">
         <span className="h-2.5 w-2.5 rounded-full bg-[#ff5f57]" />
         <span className="h-2.5 w-2.5 rounded-full bg-[#febc2e]" />
         <span className="h-2.5 w-2.5 rounded-full bg-[#28c840]" />
-        <span className="ml-3 truncate rounded-md bg-surface px-3 py-0.5 font-mono text-[10px] text-muted">
-          {p.status === "live" ? domainOf(p.liveUrl) : "em-construcao.dev"}
-        </span>
+        {hasLink ? (
+          
+            href={p.liveUrl}
+            target="_blank"
+            rel="noreferrer"
+            onClick={(e) => e.stopPropagation()}
+            className="ml-3 truncate rounded-md bg-surface px-3 py-0.5 font-mono text-[10px] text-muted transition-colors hover:text-violet"
+          >
+            {domainOf(p.liveUrl)}
+          </a>
+        ) : (
+          <span className="ml-3 truncate rounded-md bg-surface px-3 py-0.5 font-mono text-[10px] text-muted">
+            em-construcao.dev
+          </span>
+        )}
       </div>
-      <div
-        className={`relative flex-1 overflow-hidden bg-gradient-to-br ${grad}`}
-      >
+      <div className={`relative flex-1 overflow-hidden bg-gradient-to-br ${grad}`}>
         {p.imageUrl ? (
-          <Image
-            src={p.imageUrl}
-            alt={p.title}
-            fill
-            sizes="440px"
-            className="object-cover"
-          />
+          <Image src={p.imageUrl} alt={p.title} fill sizes="440px" className="object-cover" />
         ) : (
           <>
             <div
@@ -68,6 +74,100 @@ function Visual({ p }: { p: ProjectItem }) {
             </div>
           </>
         )}
+
+        {hasLink && (
+          
+            href={p.liveUrl}
+            target="_blank"
+            rel="noreferrer"
+            aria-label={`Abrir ${p.title} ao vivo`}
+            onClick={(e) => e.stopPropagation()}
+            className="group/arrow absolute bottom-2.5 right-2.5 z-10 grid h-9 w-9 place-items-center rounded-full border border-line bg-bg/80 text-fg shadow-lg backdrop-blur transition-all hover:-translate-y-0.5 hover:border-violet hover:text-violet"
+          >
+            <ArrowIcon className="h-4 w-4 transition-transform group-hover/arrow:translate-x-0.5 group-hover/arrow:-translate-y-0.5" />
+          </a>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function ProjectCard({ p, index }: { p: ProjectItem; index: number }) {
+  const soon = p.status === "soon";
+  return (
+    <div
+      className={`flex h-full w-full flex-col overflow-hidden rounded-[1.5rem] border bg-surface/60 backdrop-blur-sm ${
+        soon ? "border-dashed border-line/80" : "border-line"
+      }`}
+    >
+      <div className="relative h-40 shrink-0 overflow-hidden lg:h-48">
+        {soon ? (
+          <div className="absolute inset-0 grid place-items-center bg-gradient-to-br from-surface to-bg">
+            <span className="font-mono text-5xl font-bold text-fg/10">◇</span>
+          </div>
+        ) : (
+          <Visual p={p} />
+        )}
+      </div>
+
+      <div className="flex flex-1 flex-col p-5 lg:p-6">
+        <div className="mb-2 flex items-center justify-between lg:mb-3">
+          <span className="font-mono text-xs text-faint">
+            {String(index + 1).padStart(2, "0")} · {p.year}
+          </span>
+          {soon ? (
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-line px-2.5 py-1 font-mono text-[10px] uppercase tracking-wider text-faint">
+              em breve
+            </span>
+          ) : (
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald/40 px-2.5 py-1 font-mono text-[10px] uppercase tracking-wider text-emerald">
+              <span className="h-1.5 w-1.5 rounded-full bg-emerald" /> live
+            </span>
+          )}
+        </div>
+
+        <h3 className={`font-display text-xl font-semibold lg:text-2xl ${soon ? "text-muted" : "text-fg"}`}>
+          {p.title}
+        </h3>
+        <p className="mt-2 text-sm leading-relaxed text-muted line-clamp-2 lg:mt-3 lg:line-clamp-3">
+          {p.description}
+        </p>
+
+        {p.tags.length > 0 && (
+          <div className="mt-3 flex flex-wrap gap-2 lg:mt-4">
+            {p.tags.map((t) => (
+              <span key={t} className="rounded-md border border-line px-2.5 py-1 font-mono text-[11px] text-muted">
+                {t}
+              </span>
+            ))}
+          </div>
+        )}
+
+        <div className="mt-auto flex items-center gap-3 pt-4 lg:pt-6">
+          {!soon && p.liveUrl && (
+            
+              href={p.liveUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="group/btn inline-flex items-center gap-2 rounded-full bg-fg px-5 py-2 text-sm font-medium text-bg transition-transform hover:-translate-y-0.5 lg:py-2.5"
+            >
+              Ver ao vivo
+              <ArrowIcon className="h-4 w-4 transition-transform group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5" />
+            </a>
+          )}
+          {!soon && p.githubUrl && (
+            
+              href={p.githubUrl}
+              target="_blank"
+              rel="noreferrer"
+              aria-label="Código no GitHub"
+              className="grid h-10 w-10 place-items-center rounded-full border border-line text-muted transition-colors hover:border-violet/60 hover:text-fg lg:h-11 lg:w-11"
+            >
+              <GithubIcon className="h-[18px] w-[18px]" />
+            </a>
+          )}
+          {soon && <span className="font-mono text-xs text-faint">Em construção, volte logo ✦</span>}
+        </div>
       </div>
     </div>
   );
@@ -436,7 +536,7 @@ export default function Projects({
           {deck.map((card, i) => (
             <div
               key={i}
-              className="h-[26rem] w-[82vw] max-w-sm shrink-0 snap-center sm:h-[28rem] sm:w-[55vw]"
+              className="h-[28rem] w-[82vw] max-w-sm shrink-0 snap-center sm:h-[30rem] sm:w-[55vw]"
             >
               {card.kind === "project" ? (
                 <ProjectCard p={card.p} index={card.index} />
