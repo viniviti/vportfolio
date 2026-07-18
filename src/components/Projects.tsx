@@ -6,7 +6,6 @@ import type { ProjectItem } from "@/types/content";
 import SectionLabel from "./SectionLabel";
 import { ArrowIcon, GithubIcon } from "./SocialIcons";
 
-// Índice desta seção na pilha do snap-scroll (ver src/lib/sections.ts).
 const MY_INDEX = 4;
 
 function domainOf(url: string): string {
@@ -17,7 +16,6 @@ function domainOf(url: string): string {
   }
 }
 
-// Distância circular (mais curta) entre dois índices — base do loop infinito.
 function circ(x: number, n: number) {
   let d = ((x % n) + n) % n;
   if (d > n / 2) d -= n;
@@ -39,7 +37,7 @@ function Visual({ p }: { p: ProjectItem }) {
         <span className="h-2.5 w-2.5 rounded-full bg-[#febc2e]" />
         <span className="h-2.5 w-2.5 rounded-full bg-[#28c840]" />
         {hasLink ? (
-          
+          <a
             href={p.liveUrl}
             target="_blank"
             rel="noreferrer"
@@ -54,9 +52,17 @@ function Visual({ p }: { p: ProjectItem }) {
           </span>
         )}
       </div>
-      <div className={`relative flex-1 overflow-hidden bg-gradient-to-br ${grad}`}>
+      <div
+        className={`relative flex-1 overflow-hidden bg-gradient-to-br ${grad}`}
+      >
         {p.imageUrl ? (
-          <Image src={p.imageUrl} alt={p.title} fill sizes="440px" className="object-cover" />
+          <Image
+            src={p.imageUrl}
+            alt={p.title}
+            fill
+            sizes="440px"
+            className="object-cover"
+          />
         ) : (
           <>
             <div
@@ -76,7 +82,7 @@ function Visual({ p }: { p: ProjectItem }) {
         )}
 
         {hasLink && (
-          
+          <a
             href={p.liveUrl}
             target="_blank"
             rel="noreferrer"
@@ -126,7 +132,9 @@ function ProjectCard({ p, index }: { p: ProjectItem; index: number }) {
           )}
         </div>
 
-        <h3 className={`font-display text-xl font-semibold lg:text-2xl ${soon ? "text-muted" : "text-fg"}`}>
+        <h3
+          className={`font-display text-xl font-semibold lg:text-2xl ${soon ? "text-muted" : "text-fg"}`}
+        >
           {p.title}
         </h3>
         <p className="mt-2 text-sm leading-relaxed text-muted line-clamp-2 lg:mt-3 lg:line-clamp-3">
@@ -136,7 +144,10 @@ function ProjectCard({ p, index }: { p: ProjectItem; index: number }) {
         {p.tags.length > 0 && (
           <div className="mt-3 flex flex-wrap gap-2 lg:mt-4">
             {p.tags.map((t) => (
-              <span key={t} className="rounded-md border border-line px-2.5 py-1 font-mono text-[11px] text-muted">
+              <span
+                key={t}
+                className="rounded-md border border-line px-2.5 py-1 font-mono text-[11px] text-muted"
+              >
                 {t}
               </span>
             ))}
@@ -145,7 +156,7 @@ function ProjectCard({ p, index }: { p: ProjectItem; index: number }) {
 
         <div className="mt-auto flex items-center gap-3 pt-4 lg:pt-6">
           {!soon && p.liveUrl && (
-            
+            <a
               href={p.liveUrl}
               target="_blank"
               rel="noreferrer"
@@ -156,7 +167,7 @@ function ProjectCard({ p, index }: { p: ProjectItem; index: number }) {
             </a>
           )}
           {!soon && p.githubUrl && (
-            
+            <a
               href={p.githubUrl}
               target="_blank"
               rel="noreferrer"
@@ -166,7 +177,11 @@ function ProjectCard({ p, index }: { p: ProjectItem; index: number }) {
               <GithubIcon className="h-[18px] w-[18px]" />
             </a>
           )}
-          {soon && <span className="font-mono text-xs text-faint">Em construção, volte logo ✦</span>}
+          {soon && (
+            <span className="font-mono text-xs text-faint">
+              Em construção, volte logo ✦
+            </span>
+          )}
         </div>
       </div>
     </div>
@@ -175,7 +190,7 @@ function ProjectCard({ p, index }: { p: ProjectItem; index: number }) {
 
 function GithubCard({ github }: { github: string }) {
   return (
-    
+    <a
       href={github}
       target="_blank"
       rel="noreferrer"
@@ -184,7 +199,9 @@ function GithubCard({ github }: { github: string }) {
       <span className="grid h-16 w-16 place-items-center rounded-full border border-line bg-surface">
         <GithubIcon className="h-7 w-7 text-fg" />
       </span>
-      <p className="font-display text-2xl font-semibold text-fg">Mais no GitHub</p>
+      <p className="font-display text-2xl font-semibold text-fg">
+        Mais no GitHub
+      </p>
       <p className="max-w-[18rem] text-sm text-muted">
         Explore repositórios, experimentos e o código por trás dos projetos.
       </p>
@@ -199,7 +216,13 @@ type Card =
   | { kind: "project"; p: ProjectItem; index: number }
   | { kind: "github" };
 
-export default function Projects({ projects, github }: { projects: ProjectItem[]; github: string }) {
+export default function Projects({
+  projects,
+  github,
+}: {
+  projects: ProjectItem[];
+  github: string;
+}) {
   const deck: Card[] = [
     ...projects.map((p, index) => ({ kind: "project" as const, p, index })),
     { kind: "github" as const },
@@ -208,7 +231,7 @@ export default function Projects({ projects, github }: { projects: ProjectItem[]
 
   const [active, setActive] = useState(0);
   const activeRef = useRef(0);
-  const prevRef = useRef(0); // valor anterior de "active" (para detectar wrap)
+  const prevRef = useRef(0);
   const activeSectionRef = useRef(0);
   const prevSectionRef = useRef(0);
   const [interactive, setInteractive] = useState(false);
@@ -216,12 +239,10 @@ export default function Projects({ projects, github }: { projects: ProjectItem[]
   useEffect(() => {
     activeRef.current = active;
   }, [active]);
-  // prevRef guarda o valor de active ANTES desta renderização (efeito roda após o commit).
   useEffect(() => {
     prevRef.current = active;
   }, [active]);
 
-  // Move o baralho. loop=true → circular (setas/arraste/touch). loop=false → limitado (scroll).
   const move = (delta: number, loop = true) => {
     setActive((a) => {
       if (loop) return (((a + delta) % N) + N) % N;
@@ -230,7 +251,6 @@ export default function Projects({ projects, github }: { projects: ProjectItem[]
   };
   const jumpTo = (i: number) => setActive(((i % N) + N) % N);
 
-  // Modo interativo (mesma condição do SnapScroll): habilita o "guard" do scroll.
   useEffect(() => {
     const mq = window.matchMedia("(min-width: 1024px) and (min-height: 620px)");
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -244,7 +264,6 @@ export default function Projects({ projects, github }: { projects: ProjectItem[]
     };
   }, []);
 
-  // Guard do scroll (snap): gira o baralho e libera para a próxima/anterior seção nas pontas.
   useEffect(() => {
     if (!interactive) {
       if (window.__snapStepGuards) delete window.__snapStepGuards[MY_INDEX];
@@ -257,13 +276,13 @@ export default function Projects({ projects, github }: { projects: ProjectItem[]
           move(1, false);
           return true;
         }
-        return false; // última carta → segue para Contato
+        return false;
       } else {
         if (a > 0) {
           move(-1, false);
           return true;
         }
-        return false; // primeira carta → volta para Skills
+        return false;
       }
     };
     window.__snapStepGuards = window.__snapStepGuards || {};
@@ -281,12 +300,12 @@ export default function Projects({ projects, github }: { projects: ProjectItem[]
 
     return () => {
       window.removeEventListener("section:change", onSection);
-      if (window.__snapStepGuards?.[MY_INDEX] === guard) delete window.__snapStepGuards[MY_INDEX];
+      if (window.__snapStepGuards?.[MY_INDEX] === guard)
+        delete window.__snapStepGuards[MY_INDEX];
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [interactive, N]);
 
-  // Setas do teclado (← →) giram o baralho em loop.
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       const tag = (e.target as HTMLElement)?.tagName;
@@ -305,7 +324,6 @@ export default function Projects({ projects, github }: { projects: ProjectItem[]
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [N]);
 
-  // Arraste / swipe (mouse e toque). Cada ~64px de deslocamento = uma carta.
   const drag = useRef({ down: false, x: 0, moved: false });
   const onPointerDown = (e: React.PointerEvent) => {
     drag.current = { down: true, x: e.clientX, moved: false };
@@ -315,7 +333,7 @@ export default function Projects({ projects, github }: { projects: ProjectItem[]
     const dx = e.clientX - drag.current.x;
     if (Math.abs(dx) > 64) {
       move(dx < 0 ? 1 : -1, true);
-      drag.current.x = e.clientX; // permite múltiplos passos no mesmo gesto
+      drag.current.x = e.clientX;
       drag.current.moved = true;
     }
   };
@@ -335,10 +353,16 @@ export default function Projects({ projects, github }: { projects: ProjectItem[]
       <div className="container-x">
         <SectionLabel n="05">Projetos selecionados</SectionLabel>
         <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
-          <h2 data-reveal className="max-w-2xl font-display text-4xl font-semibold tracking-tight sm:text-6xl">
+          <h2
+            data-reveal
+            className="max-w-2xl font-display text-4xl font-semibold tracking-tight sm:text-6xl"
+          >
             Coisas que eu <span className="text-gradient">coloquei no ar</span>.
           </h2>
-          <p data-reveal className="hidden font-mono text-xs text-faint lg:block">
+          <p
+            data-reveal
+            className="hidden font-mono text-xs text-faint lg:block"
+          >
             role · arraste · ← →
           </p>
           <p data-reveal className="font-mono text-xs text-faint lg:hidden">
@@ -347,7 +371,6 @@ export default function Projects({ projects, github }: { projects: ProjectItem[]
         </div>
       </div>
 
-      {/* DESKTOP / NOTEBOOK — coverflow original, inalterado (só ganhou overflow-hidden de segurança) */}
       <div className="hidden lg:block">
         <div
           onPointerDown={onPointerDown}
@@ -356,7 +379,11 @@ export default function Projects({ projects, github }: { projects: ProjectItem[]
           onPointerLeave={endDrag}
           onClickCapture={onClickCapture}
           className="relative mx-auto h-[26rem] w-full max-w-6xl select-none overflow-hidden sm:h-[27rem]"
-          style={{ perspective: "1800px", touchAction: "pan-y", cursor: "grab" }}
+          style={{
+            perspective: "1800px",
+            touchAction: "pan-y",
+            cursor: "grab",
+          }}
         >
           {deck.map((card, i) => {
             const d = circ(i - active, N);
@@ -369,7 +396,11 @@ export default function Projects({ projects, github }: { projects: ProjectItem[]
             const style: React.CSSProperties = {
               transform: `translateX(calc(-50% + ${d * 58}%)) scale(${Math.max(1 - abs * 0.16, 0.6)}) rotateY(${d * -6}deg)`,
               filter: isCenter ? "none" : `blur(${Math.min(abs * 2.5, 6)}px)`,
-              opacity: hidden ? 0 : isCenter ? 1 : Math.max(1 - abs * 0.42, 0.1),
+              opacity: hidden
+                ? 0
+                : isCenter
+                  ? 1
+                  : Math.max(1 - abs * 0.42, 0.1),
               zIndex: 50 - abs,
               pointerEvents: hidden ? "none" : "auto",
               transition: wrapped
@@ -414,7 +445,6 @@ export default function Projects({ projects, github }: { projects: ProjectItem[]
         </div>
       </div>
 
-      {/* MOBILE / TABLET — lista com scroll horizontal nativo (sem transforms 3D) */}
       <div className="lg:hidden">
         <div
           className="flex snap-x snap-mandatory gap-4 overflow-x-auto px-6 pb-4 sm:px-10 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
