@@ -430,13 +430,13 @@ export default function Projects({
       {/* MOBILE / TABLET — lista com scroll horizontal nativo (sem transforms 3D) */}
       <div className="lg:hidden">
         <div
-          className="-mx-6 flex snap-x snap-mandatory gap-4 overflow-x-auto px-6 pb-4 sm:-mx-10 sm:px-10 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-          style={{ scrollPaddingLeft: "1.5rem" }}
+          className="flex snap-x snap-mandatory gap-4 overflow-x-auto px-6 pb-4 sm:px-10 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          style={{ scrollPaddingLeft: "1.5rem", scrollPaddingRight: "1.5rem" }}
         >
           {deck.map((card, i) => (
             <div
               key={i}
-              className="h-[26rem] w-[85vw] max-w-sm shrink-0 snap-center sm:h-[28rem] sm:w-[60vw]"
+              className="h-[26rem] w-[82vw] max-w-sm shrink-0 snap-center sm:h-[28rem] sm:w-[55vw]"
             >
               {card.kind === "project" ? (
                 <ProjectCard p={card.p} index={card.index} />
@@ -445,6 +445,7 @@ export default function Projects({
               )}
             </div>
           ))}
+          <div className="shrink-0 basis-6 sm:basis-10" aria-hidden />
         </div>
 
         <div className="mt-6 flex items-center justify-center gap-2.5">
