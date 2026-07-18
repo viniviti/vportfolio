@@ -175,7 +175,7 @@ function ProjectCard({ p, index }: { p: ProjectItem; index: number }) {
 
 function GithubCard({ github }: { github: string }) {
   return (
-    <a
+    
       href={github}
       target="_blank"
       rel="noreferrer"
@@ -184,9 +184,7 @@ function GithubCard({ github }: { github: string }) {
       <span className="grid h-16 w-16 place-items-center rounded-full border border-line bg-surface">
         <GithubIcon className="h-7 w-7 text-fg" />
       </span>
-      <p className="font-display text-2xl font-semibold text-fg">
-        Mais no GitHub
-      </p>
+      <p className="font-display text-2xl font-semibold text-fg">Mais no GitHub</p>
       <p className="max-w-[18rem] text-sm text-muted">
         Explore repositórios, experimentos e o código por trás dos projetos.
       </p>
@@ -201,13 +199,7 @@ type Card =
   | { kind: "project"; p: ProjectItem; index: number }
   | { kind: "github" };
 
-export default function Projects({
-  projects,
-  github,
-}: {
-  projects: ProjectItem[];
-  github: string;
-}) {
+export default function Projects({ projects, github }: { projects: ProjectItem[]; github: string }) {
   const deck: Card[] = [
     ...projects.map((p, index) => ({ kind: "project" as const, p, index })),
     { kind: "github" as const },
@@ -289,8 +281,7 @@ export default function Projects({
 
     return () => {
       window.removeEventListener("section:change", onSection);
-      if (window.__snapStepGuards?.[MY_INDEX] === guard)
-        delete window.__snapStepGuards[MY_INDEX];
+      if (window.__snapStepGuards?.[MY_INDEX] === guard) delete window.__snapStepGuards[MY_INDEX];
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [interactive, N]);
@@ -344,16 +335,10 @@ export default function Projects({
       <div className="container-x">
         <SectionLabel n="05">Projetos selecionados</SectionLabel>
         <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
-          <h2
-            data-reveal
-            className="max-w-2xl font-display text-4xl font-semibold tracking-tight sm:text-6xl"
-          >
+          <h2 data-reveal className="max-w-2xl font-display text-4xl font-semibold tracking-tight sm:text-6xl">
             Coisas que eu <span className="text-gradient">coloquei no ar</span>.
           </h2>
-          <p
-            data-reveal
-            className="hidden font-mono text-xs text-faint lg:block"
-          >
+          <p data-reveal className="hidden font-mono text-xs text-faint lg:block">
             role · arraste · ← →
           </p>
           <p data-reveal className="font-mono text-xs text-faint lg:hidden">
@@ -371,11 +356,7 @@ export default function Projects({
           onPointerLeave={endDrag}
           onClickCapture={onClickCapture}
           className="relative mx-auto h-[26rem] w-full max-w-6xl select-none overflow-hidden sm:h-[27rem]"
-          style={{
-            perspective: "1800px",
-            touchAction: "pan-y",
-            cursor: "grab",
-          }}
+          style={{ perspective: "1800px", touchAction: "pan-y", cursor: "grab" }}
         >
           {deck.map((card, i) => {
             const d = circ(i - active, N);
@@ -388,11 +369,7 @@ export default function Projects({
             const style: React.CSSProperties = {
               transform: `translateX(calc(-50% + ${d * 58}%)) scale(${Math.max(1 - abs * 0.16, 0.6)}) rotateY(${d * -6}deg)`,
               filter: isCenter ? "none" : `blur(${Math.min(abs * 2.5, 6)}px)`,
-              opacity: hidden
-                ? 0
-                : isCenter
-                  ? 1
-                  : Math.max(1 - abs * 0.42, 0.1),
+              opacity: hidden ? 0 : isCenter ? 1 : Math.max(1 - abs * 0.42, 0.1),
               zIndex: 50 - abs,
               pointerEvents: hidden ? "none" : "auto",
               transition: wrapped
@@ -446,7 +423,7 @@ export default function Projects({
           {deck.map((card, i) => (
             <div
               key={i}
-              className="h-[26rem] w-[82vw] max-w-sm shrink-0 snap-center sm:h-[28rem] sm:w-[55vw]"
+              className="h-[28rem] w-[82vw] max-w-sm shrink-0 snap-center sm:h-[30rem] sm:w-[55vw]"
             >
               {card.kind === "project" ? (
                 <ProjectCard p={card.p} index={card.index} />
