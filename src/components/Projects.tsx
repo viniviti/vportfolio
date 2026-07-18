@@ -173,96 +173,6 @@ function ProjectCard({ p, index }: { p: ProjectItem; index: number }) {
   );
 }
 
-function ProjectCard({ p, index }: { p: ProjectItem; index: number }) {
-  const soon = p.status === "soon";
-  return (
-    <div
-      className={`flex h-full w-full flex-col overflow-hidden rounded-[1.5rem] border bg-surface/60 backdrop-blur-sm ${
-        soon ? "border-dashed border-line/80" : "border-line"
-      }`}
-    >
-      <div className="relative h-48 shrink-0 overflow-hidden">
-        {soon ? (
-          <div className="absolute inset-0 grid place-items-center bg-gradient-to-br from-surface to-bg">
-            <span className="font-mono text-5xl font-bold text-fg/10">◇</span>
-          </div>
-        ) : (
-          <Visual p={p} />
-        )}
-      </div>
-
-      <div className="flex flex-1 flex-col p-6">
-        <div className="mb-3 flex items-center justify-between">
-          <span className="font-mono text-xs text-faint">
-            {String(index + 1).padStart(2, "0")} · {p.year}
-          </span>
-          {soon ? (
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-line px-2.5 py-1 font-mono text-[10px] uppercase tracking-wider text-faint">
-              em breve
-            </span>
-          ) : (
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald/40 px-2.5 py-1 font-mono text-[10px] uppercase tracking-wider text-emerald">
-              <span className="h-1.5 w-1.5 rounded-full bg-emerald" /> live
-            </span>
-          )}
-        </div>
-
-        <h3
-          className={`font-display text-2xl font-semibold ${soon ? "text-muted" : "text-fg"}`}
-        >
-          {p.title}
-        </h3>
-        <p className="mt-3 text-sm leading-relaxed text-muted">
-          {p.description}
-        </p>
-
-        {p.tags.length > 0 && (
-          <div className="mt-4 flex flex-wrap gap-2">
-            {p.tags.map((t) => (
-              <span
-                key={t}
-                className="rounded-md border border-line px-2.5 py-1 font-mono text-[11px] text-muted"
-              >
-                {t}
-              </span>
-            ))}
-          </div>
-        )}
-
-        <div className="mt-auto flex items-center gap-3 pt-6">
-          {!soon && p.liveUrl && (
-            <a
-              href={p.liveUrl}
-              target="_blank"
-              rel="noreferrer"
-              className="group/btn inline-flex items-center gap-2 rounded-full bg-fg px-5 py-2.5 text-sm font-medium text-bg transition-transform hover:-translate-y-0.5"
-            >
-              Ver ao vivo
-              <ArrowIcon className="h-4 w-4 transition-transform group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5" />
-            </a>
-          )}
-          {!soon && p.githubUrl && (
-            <a
-              href={p.githubUrl}
-              target="_blank"
-              rel="noreferrer"
-              aria-label="Código no GitHub"
-              className="grid h-11 w-11 place-items-center rounded-full border border-line text-muted transition-colors hover:border-violet/60 hover:text-fg"
-            >
-              <GithubIcon className="h-[18px] w-[18px]" />
-            </a>
-          )}
-          {soon && (
-            <span className="font-mono text-xs text-faint">
-              Em construção, volte logo ✦
-            </span>
-          )}
-        </div>
-      </div>
-    </div>
-  );
-}
-
 function GithubCard({ github }: { github: string }) {
   return (
     <a
@@ -536,7 +446,7 @@ export default function Projects({
           {deck.map((card, i) => (
             <div
               key={i}
-              className="h-[28rem] w-[82vw] max-w-sm shrink-0 snap-center sm:h-[30rem] sm:w-[55vw]"
+              className="h-[26rem] w-[82vw] max-w-sm shrink-0 snap-center sm:h-[28rem] sm:w-[55vw]"
             >
               {card.kind === "project" ? (
                 <ProjectCard p={card.p} index={card.index} />
