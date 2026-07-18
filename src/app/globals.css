@@ -1,0 +1,207 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================================
+   DESIGN TOKENS
+   Dark é o padrão (html.dark). Light sobrescreve em html.light.
+   ============================================================ */
+:root,
+html.dark {
+  --bg: 9 9 14;
+  --surface: 15 15 23;
+  --elevated: 22 22 33;
+  --fg: 238 238 246;
+  --muted: 154 154 176;
+  --faint: 96 96 120;
+  --line: 38 38 54;
+  --violet: 139 92 246;
+  --violet-soft: 176 152 255;
+  --emerald: 52 211 153;
+  --emerald-soft: 110 231 183;
+
+  --font-display: "Space Grotesk", system-ui, sans-serif;
+  --font-sans: "Inter", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+
+  --grain: 0.04;
+}
+
+html.light {
+  --bg: 244 244 249;
+  --surface: 255 255 255;
+  --elevated: 255 255 255;
+  --fg: 17 17 27;
+  --muted: 88 88 110;
+  --faint: 150 150 172;
+  --line: 224 224 235;
+  --violet: 109 40 217;
+  --emerald: 5 150 105;
+  --violet-soft: 124 58 237;
+  --emerald-soft: 16 185 129;
+  --grain: 0.03;
+}
+
+* {
+  border-color: rgb(var(--line));
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background-color: rgb(var(--bg));
+  color: rgb(var(--fg));
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+}
+
+::selection {
+  background: rgb(var(--violet) / 0.3);
+  color: rgb(var(--fg));
+}
+
+/* Scrollbar discreta */
+::-webkit-scrollbar {
+  width: 9px;
+}
+::-webkit-scrollbar-track {
+  background: rgb(var(--bg));
+}
+::-webkit-scrollbar-thumb {
+  background: rgb(var(--line));
+  border-radius: 99px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgb(var(--violet) / 0.6);
+}
+
+/* Cursor custom (apenas em ponteiro fino) */
+@media (hover: hover) and (pointer: fine) {
+  html.has-cursor,
+  html.has-cursor * {
+    cursor: none !important;
+  }
+}
+
+@layer components {
+  .container-x {
+    @apply mx-auto w-full max-w-[1400px] px-6 sm:px-10 lg:px-16;
+  }
+
+  .eyebrow {
+    @apply font-mono text-[11px] uppercase tracking-[0.35em] text-muted;
+  }
+
+  .link-underline {
+    background-image: linear-gradient(rgb(var(--violet)), rgb(var(--violet)));
+    background-size: 0% 1px;
+    background-position: 0 100%;
+    background-repeat: no-repeat;
+    transition: background-size 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+  }
+  .link-underline:hover {
+    background-size: 100% 1px;
+  }
+}
+
+@layer utilities {
+  .text-gradient {
+    background: linear-gradient(
+      100deg,
+      rgb(var(--violet-soft)),
+      rgb(var(--emerald-soft))
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+  }
+  .text-stroke {
+    -webkit-text-stroke: 1px rgb(var(--fg) / 0.55);
+    color: transparent;
+  }
+  .text-stroke-violet {
+    -webkit-text-stroke: 1.5px rgb(var(--violet) / 0.85);
+    color: transparent;
+  }
+  .glass {
+    background: rgb(var(--surface) / 0.6);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+  }
+  .grain::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 60;
+    pointer-events: none;
+    opacity: var(--grain);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .perspective {
+    perspective: 1000px;
+  }
+  .preserve-3d {
+    transform-style: preserve-3d;
+  }
+}
+
+/* ============================================================
+   SNAP SCROLL — telas fixas em pilha, como o dvlpr.pro.
+   Ativo apenas em telas grandes o suficiente (ver SnapScroll.tsx).
+   ============================================================ */
+.snap-track {
+  transition: transform 640ms cubic-bezier(0.83, 0, 0.17, 1);
+  will-change: transform;
+}
+
+html.snap-active .snap-track > section {
+  height: 100svh !important;
+  min-height: 100svh !important;
+  max-height: 100svh !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  scroll-behavior: auto !important;
+}
+
+html.snap-active .snap-track > section::-webkit-scrollbar {
+  width: 4px;
+}
+html.snap-active .snap-track > section::-webkit-scrollbar-thumb {
+  background: rgb(var(--line));
+  border-radius: 99px;
+}
+
+/* Reveal inicial: elementos com data-reveal começam escondidos.
+   Se o JS falhar, um fallback torna tudo visível (ver Reveal component). */
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(28px);
+  will-change: transform, opacity;
+}
+html.no-js [data-reveal] {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
